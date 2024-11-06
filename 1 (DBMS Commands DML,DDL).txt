@@ -1,0 +1,69 @@
+-- Step 1: Create the courses table
+CREATE TABLE courses (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(100) NOT NULL,
+    credits INT
+);
+
+-- Step 2: Create the students table
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL
+);
+
+-- Step 3: Create the enrollments table
+CREATE TABLE enrollments (
+    enrollment_id INT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    grade CHAR(1),
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
+
+-- Step 4: Insert sample data into courses
+INSERT INTO courses (course_id, course_name, credits)
+VALUES (1, 'Math', 3),
+       (2, 'Science', 4);
+
+-- Step 5: Insert sample data into students
+INSERT INTO students (student_id, first_name, last_name)
+VALUES (1, 'Alice', 'Johnson'),
+       (2, 'Bob', 'Smith');
+
+-- Step 6: Insert sample data into enrollments
+INSERT INTO enrollments (enrollment_id, student_id, course_id, grade)
+VALUES (1, 1, 1, 'A'),
+       (2, 2, 2, 'B');
+
+-- Step 7: Update a student's name
+UPDATE students
+SET first_name = 'Charlie'
+WHERE student_id = 1;
+
+-- Step 8: Delete a course
+DELETE FROM courses
+WHERE course_id = 2;
+
+-- Step 9: Select all students
+SELECT * FROM students;
+
+-- Step 10: Select students enrolled in a specific course
+SELECT s.first_name, s.last_name, c.course_name
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN courses c ON e.course_id = c.course_id
+WHERE c.course_name = 'Math';
+
+-- Step 11: Select students with a specific grade
+SELECT s.first_name, s.last_name, e.grade
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+WHERE e.grade = 'A';
+
+-- Step 12: Count students in each course
+SELECT c.course_name, COUNT(e.student_id) AS total_students
+FROM courses c
+LEFT JOIN enrollments e ON c.course_id = e.course_id
+GROUP BY c.course_name;

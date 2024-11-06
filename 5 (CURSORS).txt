@@ -1,0 +1,119 @@
+Step 1 : CREATE DATABASE
+
+CREATE TABLE IF NOT EXISTS N_Roll_Call (
+    student_id INT,
+    roll_date DATE
+);
+
+CREATE TABLE IF NOT EXISTS O_Roll_Call (
+    student_id INT,
+    roll_date DATE
+);
+
+
+Step 2: Run he gicen commands
+
+DELIMITER //
+
+CREATE PROCEDURE MergeRollCall()
+BEGIN
+    DECLARE v_student_id INT;
+    DECLARE v_roll_date DATE;
+    DECLARE done INT DEFAULT FALSE;
+
+
+    DECLARE roll_call_cursor CURSOR FOR
+        SELECT student_id, roll_date FROM N_Roll_Call;
+
+ 
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+
+    OPEN roll_call_cursor;
+
+    read_loop: LOOP
+       
+        FETCH roll_call_cursor INTO v_student_id, v_roll_date;
+
+      
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+      
+        IF NOT EXISTS (
+            SELECT 1 FROM O_Roll_Call
+            WHERE student_id = v_student_id AND roll_date = v_roll_date
+        ) THEN
+            INSERT INTO O_Roll_Call (student_id, roll_date)
+            VALUES (v_student_id, v_roll_date);
+        END IF;
+
+    END LOOP;
+
+    CLOSE roll_call_cursor;
+
+  
+    COMMIT;
+END //
+
+DELIMITER ;
+
+
+
+
+
+COMMENTS //////
+
+DELIMITER //
+
+CREATE PROCEDURE MergeRollCall()
+BEGIN
+    DECLARE v_student_id INT;
+    DECLARE v_roll_date DATE;
+    DECLARE done INT DEFAULT FALSE;
+
+    -- Declare cursor
+    DECLARE roll_call_cursor CURSOR FOR
+        SELECT student_id, roll_date FROM N_Roll_Call;
+
+    -- Declare handler to set done flag
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Open cursor
+    OPEN roll_call_cursor;
+
+    read_loop: LOOP
+        -- Fetch data into variables
+        FETCH roll_call_cursor INTO v_student_id, v_roll_date;
+
+        -- Exit loop if no more data
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Check if the record exists in O_Roll_Call and insert if it does not
+        IF NOT EXISTS (
+            SELECT 1 FROM O_Roll_Call
+            WHERE student_id = v_student_id AND roll_date = v_roll_date
+        ) THEN
+            INSERT INTO O_Roll_Call (student_id, roll_date)
+            VALUES (v_student_id, v_roll_date);
+        END IF;
+
+    END LOOP;
+
+    -- Close cursor
+    CLOSE roll_call_cursor;
+
+    -- Commit transaction
+    COMMIT;
+END //
+
+DELIMITER ;
+
+
+
+
+
+

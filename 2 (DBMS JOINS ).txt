@@ -1,0 +1,98 @@
+-- 1. Inner Join
+SELECT Employees.EmployeeName, Departments.DepartmentName
+FROM Employees
+INNER JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+-- 2. Left Join
+SELECT Employees.EmployeeName, Departments.DepartmentName
+FROM Employees
+LEFT JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+-- 3. Right Join
+SELECT Employees.EmployeeName, Departments.DepartmentName
+FROM Employees
+RIGHT JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+-- 4. Full Outer Join
+SELECT Employees.EmployeeName, Departments.DepartmentName
+FROM Employees
+FULL OUTER JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+-- 5. Self Join
+SELECT e1.EmployeeName AS Employee1, e2.EmployeeName AS Employee2
+FROM Employees e1, Employees e2
+WHERE e1.DepartmentID = e2.DepartmentID AND e1.EmployeeID <> e2.EmployeeID;
+
+-- 6. Subquery (find max salary in each department)
+SELECT EmployeeName, Salary
+FROM Employees
+WHERE Salary = (SELECT MAX(Salary) FROM Employees WHERE DepartmentID = Employees.DepartmentID);
+
+-- 7. Subquery with IN
+SELECT EmployeeName
+FROM Employees
+WHERE DepartmentID IN (SELECT DepartmentID FROM Departments WHERE DepartmentName = 'Finance');
+
+-- 8. View Creation
+CREATE VIEW EmployeeDepartmentView AS
+SELECT Employees.EmployeeName, Departments.DepartmentName
+FROM Employees
+JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID;
+
+-- 9. Select from View
+SELECT * FROM EmployeeDepartmentView;
+
+-- 10. Nested Subquery
+SELECT EmployeeName
+FROM Employees
+WHERE Salary > (SELECT AVG(Salary) FROM Employees WHERE DepartmentID = Employees.DepartmentID);
+
+-- 11. Basic Select Query
+SELECT EmployeeName, Salary
+FROM Employees;
+
+-- 12. Order By
+SELECT EmployeeName, Salary
+FROM Employees
+ORDER BY Salary DESC;
+
+-- 13. Count with Group By
+SELECT DepartmentID, COUNT(EmployeeID) AS NumberOfEmployees
+FROM Employees
+GROUP BY DepartmentID;
+
+-- 14. Average Salary by Department
+SELECT DepartmentID, AVG(Salary) AS AverageSalary
+FROM Employees
+GROUP BY DepartmentID;
+
+-- 15. Join with Filter Condition
+SELECT Employees.EmployeeName
+FROM Employees
+INNER JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID
+WHERE Departments.DepartmentName = 'Finance';
+
+-- 16. IN Operator
+SELECT EmployeeName
+FROM Employees
+WHERE DepartmentID IN (SELECT DepartmentID FROM Departments WHERE DepartmentName IN ('HR', 'IT'));
+
+-- 17. HAVING with Aggregate Function
+SELECT DepartmentID, COUNT(EmployeeID) AS EmployeeCount
+FROM Employees
+GROUP BY DepartmentID
+HAVING COUNT(EmployeeID) > 3;
+
+-- 18. Between Operator
+SELECT EmployeeName, Salary
+FROM Employees
+WHERE Salary BETWEEN 40000 AND 70000;
+
+-- 19. Distinct
+SELECT DISTINCT DepartmentID
+FROM Employees;
+
+-- 20. Like Operator
+SELECT EmployeeName
+FROM Employees
+WHERE EmployeeName LIKE 'A%';
